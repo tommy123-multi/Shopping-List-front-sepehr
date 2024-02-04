@@ -1,0 +1,11 @@
+{
+  "name": "shopping-list-project",
+  "version": "1.0.0",
+  "description": "simple vanila js for shopping list",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Parsa Moshirpoor",
+  "license": "MIT"
+}
