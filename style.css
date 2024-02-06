@@ -82,6 +82,7 @@ header h1 {
     border: none;
     padding: 0;
     cursor: pointer;
+    float: right;
 }
 
 .btn-clear {
