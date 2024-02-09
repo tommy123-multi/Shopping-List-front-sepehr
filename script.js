@@ -1,61 +1,187 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('item-form');
-    const itemList = document.getElementById('item-list');
-    const filter = document.getElementById('filter');
-    const clearButton = document.getElementById('clear');
+let inpElem , filterElem ,addBtnElem, clrBtnElem, ulElem, storageItems
+function init(){
+    inpElem = document.getElementById("item-input");
 
-    clearButton.style.display = 'none';
+    filterElem = document.getElementById("filter");
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
+    addBtnElem = document.querySelector(".btn");
 
-        const newItem = document.getElementById('item-input').value;
+    clrBtnElem = document.querySelector(".btn-clear");
 
-        if (newItem.trim() !== '') {
-            const li = document.createElement('li');
-            li.innerText = newItem;
+    ulElem = document.getElementById("item-list");
 
-            const removeButton = document.createElement('button');
-            removeButton.className = 'remove-item btn-link text-red';
-            removeButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    loadFromStorage();
 
-            removeButton.addEventListener('click', function () {
-                li.remove();
-                checkListEmpty();
-            });
+    checkUi();
 
-            li.appendChild(removeButton);
+    addBtnElem.addEventListener("click",addItem);
 
-            itemList.appendChild(li);
+    ulElem.addEventListener("click",removeItem);
 
-            document.getElementById('item-input').value = '';
+    clrBtnElem.addEventListener("click",clearList);
 
-            clearButton.style.display = 'block';
+    filterElem.addEventListener("input",filterItems)
+}
+function addItem(evt) {
+
+    evt.preventDefault()
+
+    if (inpElem.value !== "") {
+
+        let newItem = inpElem.value;
+
+        inpElem.value = "";
+
+        if (!isRepeated(newItem)) {
+
+            createItem(newItem);
+
+            addToStorage(newItem);}
+
+        else{ alert("item exists")
         }
-    });
+        checkUi();
 
-    filter.addEventListener('input', function () {
-        const searchTerm = filter.value.toLowerCase();
-        const items = itemList.getElementsByTagName('li');
-
-        Array.from(items).forEach(function (item) {
-            const itemName = item.innerText.toLowerCase();
-            if (itemName.includes(searchTerm)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    });
-
-    clearButton.addEventListener('click', function () {
-        itemList.innerHTML = '';
-        clearButton.style.display = 'none';
-    });
-
-    function checkListEmpty() {
-        if (itemList.children.length === 0) {
-            clearButton.style.display = 'none';
-        }
     }
-});
+}
+function isRepeated(newItem){
+
+    const items = document.querySelectorAll("li");
+
+    let listItems = []
+
+    items.forEach((item)=>{
+
+        listItems.push(item.textContent.toLowerCase())})
+
+    console.log (listItems.indexOf(newItem.toLowerCase()))
+
+    return listItems.indexOf(newItem.toLowerCase()) !== -1;
+}
+function createItem(newItem) {
+
+    let newList = document.createElement("li");
+
+    let newButton = document.createElement("button");
+
+    let newText =  document.createTextNode(newItem);
+
+    let newIcon = document.createElement("i");
+
+    ulElem.appendChild(newList);
+
+    newList.appendChild(newText);
+
+    newList.appendChild(newButton);
+
+    newButton.appendChild(newIcon);
+
+    newButton.className="remove-item btn-link text-red";
+
+    newIcon.className = "fa-solid fa-xmark";
+
+}
+function removeItem(evt){
+
+    if (evt.target.className.includes("fa-xmark")){
+
+        removeFromStorage((evt.target.parentElement.parentElement.textContent))
+
+        evt.target.parentElement.parentElement.remove();
+
+        checkUi();
+    }
+}
+function removeFromStorage(item) {
+
+    let index = storageItems.indexOf(item)
+
+    if (index !== -1) {
+
+        storageItems.splice(index, 1);
+
+        localStorage.setItem("key",JSON.stringify(storageItems));
+    }
+}
+function clearList(evt){
+
+    while (ulElem.firstElementChild){
+
+        ulElem.firstElementChild.remove();
+    }
+    storageItems = []
+
+    localStorage.setItem("key",JSON.stringify(storageItems));
+
+    checkUi()
+}
+function  checkUi(){
+
+    if (!ulElem.firstElementChild){
+
+        clrBtnElem.style.display = "none";
+
+        filterElem.style.display = "none";
+    }
+    else{
+        clrBtnElem.style.display = "block";
+
+        filterElem.style.display = "block";
+    }
+
+}
+function filterItems(evt){
+
+    const searchValue = filterElem.value.toLowerCase();
+
+    const items = document.querySelectorAll("li");
+
+    items.forEach((item)=>{
+
+        if (item.textContent.toLowerCase().indexOf(searchValue) === -1) {
+
+            item.style.display = "none";
+        }
+        else{
+            item.style.display = "block";
+        }
+    })
+
+}
+
+function getFromStorage() {
+
+    let listFromStorage = [];
+
+    if (!localStorage.getItem('key')) {
+
+        listFromStorage = [];
+
+    } else {
+
+        listFromStorage = JSON.parse(localStorage.getItem("key"));
+    }
+
+    return listFromStorage;
+}
+function addToStorage(item){
+
+    storageItems.push(item);
+
+    localStorage.setItem("key",JSON.stringify(storageItems));
+
+    return 1;
+
+}
+function loadFromStorage(){
+
+    storageItems = getFromStorage();
+
+    storageItems.forEach((item)=>{
+
+        createItem(item)
+
+    })
+}
+init();
+
