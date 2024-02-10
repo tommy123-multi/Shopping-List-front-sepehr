@@ -1,8 +1,11 @@
+
 let inpElem , filterElem ,addBtnElem, clrBtnElem, ulElem, storageItems
 function init(){
     inpElem = document.getElementById("item-input");
 
+
     filterElem = document.getElementById("filter");
+
 
     addBtnElem = document.querySelector(".btn");
 
