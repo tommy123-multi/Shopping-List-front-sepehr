@@ -1,6 +1,12 @@
 
-let inpElem , filterElem ,addBtnElem, clrBtnElem, ulElem, storageItems
+//sepehr-sorayapour//
+//ورژن جاوا خودم//
+
+
+let filterElem ,inpElemadd, clrBtnElem, ulElem, storageItems, BtnElem,
 function init(){
+
+
     inpElem = document.getElementById("item-input");
 
 
@@ -11,11 +17,8 @@ function init(){
 
     clrBtnElem = document.querySelector(".btn-clear");
 
-    ulElem = document.getElementById("item-list");
+    loadFromStorage()
 
-    loadFromStorage();
-
-    checkUi();
 
     addBtnElem.addEventListener("click",addItem);
 
@@ -23,7 +26,6 @@ function init(){
 
     clrBtnElem.addEventListener("click",clearList);
 
-    filterElem.addEventListener("input",filterItems)
 }
 function addItem(evt) {
 
@@ -43,7 +45,7 @@ function addItem(evt) {
 
         else{ alert("item exists")
         }
-        checkUi();
+      
 
     }
 }
@@ -81,7 +83,7 @@ function createItem(newItem) {
 
     newButton.className="remove-item btn-link text-red";
 
-    newIcon.className = "fa-solid fa-xmark";
+    
 
 }
 function removeItem(evt){
@@ -139,15 +141,14 @@ function filterItems(evt){
 
     const items = document.querySelectorAll("li");
 
-    items.forEach((item)=>{
+    items.forEach((item)={
 
         if (item.textContent.toLowerCase().indexOf(searchValue) === -1) {
 
             item.style.display = "none";
         }
         else{
-            item.style.display = "block";
-        }
+           
     })
 
 }
@@ -173,7 +174,6 @@ function addToStorage(item){
 
     localStorage.setItem("key",JSON.stringify(storageItems));
 
-    return 1;
 
 }
 function loadFromStorage(){
